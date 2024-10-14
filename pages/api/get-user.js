@@ -4,6 +4,7 @@ import path from 'path';
 const detailsFilePath = path.join(process.cwd(), 'data', 'details.json');
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }

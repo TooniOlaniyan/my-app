@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"; // Import JWT
 const authFilePath = path.join(process.cwd(), "data", "auth.json");
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }

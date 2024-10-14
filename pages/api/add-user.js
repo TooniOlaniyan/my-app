@@ -18,43 +18,37 @@ const writeDataToFile = (data) => {
 };
 
 export default async function handler(req, res) {
-  await NextCors(req, res, async () => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  if (req.method === "POST") {
+    // Get the user data from the request body
+    const newUser = req.body;
+    console.log(newUser);
 
-    if (req.method === "POST") {
-      // Get the user data from the request body
-      const newUser = req.body;
-      console.log(newUser);
-      
-  
-      // Validate that userId is provided
-      if (!newUser.id) {
-        return res.status(400).json({ message: "User ID is required." });
-      }
-  
-      // Read existing users from the JSON file
-      const users = readDataFromFile();
-  
-      // Check if the user ID already exists
-      const existingUser = users.find(user => user.id === newUser.id);
-      if (existingUser) {
-        return res.status(400).json({ message: "User ID already exists." });
-      }
-  
-      // Add the new user to the users array
-      users.push(newUser);
-  
-      // Write the updated users back to the JSON file
-      writeDataToFile(users);
-  
-      // Respond with the new user data
-      res
-        .status(201)
-        .json({ message: "User saved successfully", user: newUser });
-    } else {
-      // Handle any other HTTP method
-      res.setHeader("Allow", ["POST"]);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
+    // Validate that userId is provided
+    if (!newUser.id) {
+      return res.status(400).json({ message: "User ID is required." });
     }
-  })
-  
+
+    // Read existing users from the JSON file
+    const users = readDataFromFile();
+
+    // Check if the user ID already exists
+    const existingUser = users.find((user) => user.id === newUser.id);
+    if (existingUser) {
+      return res.status(400).json({ message: "User ID already exists." });
+    }
+
+    // Add the new user to the users array
+    users.push(newUser);
+
+    // Write the updated users back to the JSON file
+    writeDataToFile(users);
+
+    // Respond with the new user data
+    res.status(201).json({ message: "User saved successfully", user: newUser });
+  } else {
+    // Handle any other HTTP method
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
 }

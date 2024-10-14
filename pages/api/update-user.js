@@ -17,6 +17,7 @@ const writeDataToFile = (data) => {
 };
 
 export default function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method === "POST") {
     // Get the user data and ID from the request body
     const { userId, info } = req.body;

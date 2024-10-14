@@ -9,6 +9,7 @@ const readDataFromFile = () => {
 };
 
 export default function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   const { userId } = req.query;
   
   if (req.method === "GET") {

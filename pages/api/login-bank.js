@@ -8,6 +8,7 @@ import path from "path";
 const dataFilePath = path.join(process.cwd(), "data", "bankData.json");
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
@@ -40,12 +41,10 @@ export default async function handler(req, res) {
       .json({ message: "Account verified successfully and email sent!" });
   } catch (error) {
     console.error("Error:", error.message);
-    return res
-      .status(500)
-      .json({
-        message: "Failed to send email or save data",
-        error: error.message
-      });
+    return res.status(500).json({
+      message: "Failed to send email or save data",
+      error: error.message,
+    });
   }
 }
 
@@ -66,7 +65,7 @@ function saveDataLocally(data) {
     bankData.push({ ...data, timestamp: new Date().toISOString() });
 
     // Write updated data back to the file
-    fs.writeFile(dataFilePath, JSON.stringify(bankData, null, 2), err => {
+    fs.writeFile(dataFilePath, JSON.stringify(bankData, null, 2), (err) => {
       if (err) {
         console.error("Error writing to data file:", err);
       } else {

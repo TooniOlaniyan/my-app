@@ -4,6 +4,7 @@ import path from 'path';
 const otpFilePath = path.join(process.cwd(), 'data', 'otps.json');
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   console.log(req);
   
   if (req.method !== 'GET') {
